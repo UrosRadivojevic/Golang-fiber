@@ -10,10 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type ContainerInterface interface {
-	GetMongoClient() *mongo.Client
-}
-
 type Container struct {
 	Client           *mongo.Client
 	mongoDbDatabases map[string]*mongo.Database
@@ -68,8 +64,4 @@ func (c *Container) GetMongoCollection(col string) *mongo.Collection {
 
 func (c *Container) GetNetflixRepository() repositories.NetflixInterface {
 	return repositories.New(c.GetMongoCollection("watchlist"))
-}
-
-func Hello(c ContainerInterface) {
-	c.GetMongoClient()
 }
