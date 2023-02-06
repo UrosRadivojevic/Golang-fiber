@@ -11,7 +11,7 @@ package repositories
 import (
 	"context"
 
-	"github.com/urosradivojevic/health/model"
+	"github.com/urosradivojevic/health/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

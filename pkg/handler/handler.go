@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/urosradivojevic/health/model"
-	"github.com/urosradivojevic/health/repositories"
+	"github.com/urosradivojevic/health/pkg/model"
+	"github.com/urosradivojevic/health/pkg/repositories"
 )
 
 var startTime time.Time

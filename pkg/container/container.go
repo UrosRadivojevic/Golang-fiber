@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/urosradivojevic/health/repositories"
+	"github.com/urosradivojevic/health/pkg/repositories"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

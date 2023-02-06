@@ -4,13 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/gkampitakis/fiber-modules/gracefulshutdown"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"github.com/urosradivojevic/health/container"
-	"github.com/urosradivojevic/health/handler"
+	"github.com/urosradivojevic/health/pkg/container"
+	"github.com/urosradivojevic/health/pkg/routes"
 )
 
 var flagvar string
@@ -41,15 +40,8 @@ func main() {
 	if env == "production" {
 		fmt.Println("No access")
 	}
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, Div Rhino!")
-	})
 
-	app.Delete("/movie/:id", handler.DeleteMovie(c.GetNetflixRepository()))
-	app.Get("/health", handler.Health2(time.Now()))
-	app.Put("/movie/:id", handler.MarkAsWatched(c.GetNetflixRepository()))
-	app.Post("/movie", handler.CreateMovie(c.GetNetflixRepository()))
-	app.Get("/movies", handler.GetMovies(c.GetNetflixRepository()))
+	routes.SetUpRoutes(app, c)
 
 	fmt.Println("Server is getting started...")
 	gracefulshutdown.Listen(app, "localhost:3000", gracefulshutdown.Default())
