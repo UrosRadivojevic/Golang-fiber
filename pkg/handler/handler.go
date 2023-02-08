@@ -23,6 +23,7 @@ func Health2(stratime time.Time) fiber.Handler {
 		})
 	}
 }
+
 func CreateMovie(repo repositories.NetflixInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var movie model.Netflix
@@ -46,7 +47,7 @@ func GetMovies(repo repositories.NetflixInterface) fiber.Handler {
 			return err
 		}
 		file, _ := json.MarshalIndent(movies, "", " ")
-		_ = ioutil.WriteFile("test.json", file, 0644)
+		_ = ioutil.WriteFile("test.json", file, 0o644)
 		return c.JSON(movies)
 	}
 }
