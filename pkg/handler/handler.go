@@ -12,17 +12,17 @@ import (
 
 var startTime time.Time
 
-func Health2(stratime time.Time) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		health := true
-		c.SendString("Hello, World!\n")
-		uptime := time.Since(startTime)
-		return c.JSON(fiber.Map{
-			"healthy": health,
-			"update":  uptime.Seconds(),
-		})
-	}
-}
+// func Health2(stratime time.Time) fiber.Handler {
+// 	return func(c *fiber.Ctx) error {
+// 		health := true
+// 		c.SendString("Hello, World!\n")
+// 		uptime := time.Since(startTime)
+// 		return c.JSON(fiber.Map{
+// 			"healthy": health,
+// 			"update":  uptime.Seconds(),
+// 		})
+// 	}
+// }
 
 func CreateMovie(repo repositories.NetflixInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
