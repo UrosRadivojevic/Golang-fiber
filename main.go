@@ -20,7 +20,6 @@ func init() {
 }
 
 func main() {
-
 	c := container.New(flagvar)
 	fmt.Printf("%v\n", flagvar)
 	app := fiber.New()
@@ -37,9 +36,6 @@ func main() {
 			log.Fatal("Error loading .env file")
 		}
 	}
-	if env == "production" {
-		fmt.Println("No access")
-	}
 
 	routes.SetUpRoutes(app, c)
 
@@ -50,7 +46,6 @@ func main() {
 	// if err != nil {
 	// 	fmt.Println(err)
 	// }
-
 }
 
 // func GracefullShoutdown(app *fiber.App) {
@@ -58,7 +53,8 @@ func main() {
 // 	signal.Notify(c, os.Interrupt)
 
 // 	serverShutdown := make(chan struct{})
-
+// kanal sluzi da sinhronizujem dve niti
+// go func, sponujem novu nit
 // 	go func() {
 // 		_ = <-c
 // 		fmt.Println("Gracefully shutting down...")

@@ -1,44 +1,23 @@
 [
  {
-  "_id": "63db72fac61340f84df19d9b",
-  "leadrole": "Denzel",
-  "movie": "American Gangster",
-  "watched": true,
-  "year": 2010
- },
- {
-  "_id": "63db86eaa2d02087a59f1b61",
+  "_id": "63e22d6a22d15a2f27e6ba70",
   "leadrole": "Denzel",
   "movie": "Safe House",
-  "watched": true,
+  "watched": false,
   "year": 2005
  },
  {
-  "_id": "63db8ea0581cf00f44bcca5e",
-  "leadrole": "Brad",
-  "movie": "Allies",
+  "_id": "63e2399122d15a2f27e6ba72",
+  "leadrole": "Vin",
+  "movie": "Fast five",
   "watched": true,
-  "year": 2005
+  "year": 2006
  },
  {
-  "_id": "63db93a7ad19072450c06bf4",
-  "leadrole": "Paul",
-  "movie": "Fast Five",
-  "watched": true,
-  "year": 2007
- },
- {
-  "_id": "63dd0e240f09ce81aae312df",
-  "leadrole": "Djuricko",
-  "movie": "Kad porastem bicu kengur",
-  "watched": true,
-  "year": 2000
- },
- {
-  "_id": "63dd0ee535c3738b7c849510",
-  "leadrole": "Piter",
-  "movie": "Spiderman",
-  "watched": true,
-  "year": 2000
+  "_id": "63e23e7b55176238f8327e1f",
+  "leadrole": "Ryan",
+  "movie": "Deadpool",
+  "watched": false,
+  "year": 2012
  }
 ]

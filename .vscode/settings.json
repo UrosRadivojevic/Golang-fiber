@@ -10,7 +10,7 @@
   "go.useLanguageServer": true,
   "go.autocompleteUnimportedPackages": true,
   "go.gotoSymbol.includeImports": true,
-  "go.inferGopath": true,
+  "go.inferGopath": false,
   "go.gotoSymbol.includeGoroot": true,
   "go.vetOnSave": "workspace",
   "go.coverMode": "atomic",
@@ -47,5 +47,6 @@
     "generateTestForPackage": true,
     "benchmarkAtCursor": true
   },
-  "go.testExplorer.showDynamicSubtestsInEditor": true
+  "go.testExplorer.showDynamicSubtestsInEditor": true,
+  "dotenv.enableAutocloaking": false
 }
