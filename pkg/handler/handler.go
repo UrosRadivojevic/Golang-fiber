@@ -3,14 +3,13 @@ package handler
 import (
 	"encoding/json"
 	"io/ioutil"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/urosradivojevic/health/pkg/model"
 	"github.com/urosradivojevic/health/pkg/repositories"
 )
 
-var startTime time.Time
+// var startTime time.Time
 
 // func Health2(stratime time.Time) fiber.Handler {
 // 	return func(c *fiber.Ctx) error {
