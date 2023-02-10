@@ -7,9 +7,10 @@ import (
 )
 
 func SetUpRoutes(app *fiber.App, c *container.Container) {
-	app.Delete("/movie/:id", handler.DeleteMovie(c.GetNetflixRepository()))
+	app.Delete("/movie/:id", handler.DeleteMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Get("/movie/:id", handler.GetMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	// app.Get("/health", handler.Health2(time.Now()))
 	app.Put("/movie/:id", handler.MarkAsWatched(c.GetNetflixRepository()))
-	app.Post("/movie", handler.CreateMovie(c.GetNetflixRepository()))
-	app.Get("/movies", handler.GetMovies(c.GetNetflixRepository()))
+	app.Post("/movie", handler.CreateMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Get("/movies", handler.GetMovies(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 }

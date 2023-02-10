@@ -18,10 +18,11 @@ import (
 )
 
 type NetflixInterface interface {
-	InsertOneMovie(movie model.Netflix) error
+	InsertOneMovie(movie model.Netflix) (primitive.ObjectID, error)
 	GetAllMovies() ([]primitive.M, error)
 	UpdateOneMovie(movieId string) error
 	DeleteOneMovie(movieId string) error
+	GetOneMovie(movieId string) (model.Netflix, error)
 }
 
 type Netflix struct {
@@ -33,12 +34,13 @@ func New(col *mongo.Collection) *Netflix {
 		col: col,
 	}
 }
-func (n *Netflix) InsertOneMovie(movie model.Netflix) error {
-	_, err := n.col.InsertOne(context.Background(), movie)
+func (n *Netflix) InsertOneMovie(movie model.Netflix) (primitive.ObjectID, error) {
+	m, err := n.col.InsertOne(context.Background(), movie)
 	if err != nil {
-		return err
+		return primitive.NilObjectID, err
 	}
-	return nil
+	id := m.InsertedID.(primitive.ObjectID)
+	return id, nil
 }
 
 func (n *Netflix) GetAllMovies() ([]primitive.M, error) {
@@ -58,6 +60,16 @@ func (n *Netflix) GetAllMovies() ([]primitive.M, error) {
 	}
 	defer cursor.Close(context.Background())
 	return movies, nil
+}
+func (n *Netflix) GetOneMovie(movieId string) (model.Netflix, error) {
+	id, _ := primitive.ObjectIDFromHex(movieId)
+	filter := bson.M{"_id": id}
+	val := n.col.FindOne(context.Background(), filter)
+	var movie model.Netflix
+	if err := val.Decode(&movie); err != nil {
+		return model.Netflix{}, err
+	}
+	return movie, nil
 }
 
 func (n *Netflix) UpdateOneMovie(movieId string) error {

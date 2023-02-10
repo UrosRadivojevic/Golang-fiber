@@ -5,12 +5,15 @@ import (
 	"log"
 	"os"
 
+	"github.com/go-redis/redis/v8"
+	"github.com/urosradivojevic/health/pkg/cache"
 	"github.com/urosradivojevic/health/pkg/repositories"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Container struct {
+	RedisClient      *redis.Client
 	Client           *mongo.Client
 	mongoDbDatabases map[string]*mongo.Database
 	env              string
@@ -22,28 +25,39 @@ func New(env string) *Container {
 		env:              env,
 	}
 }
+func (c *Container) GetRedisClient() *redis.Client {
+	if c.RedisClient != nil {
+		return c.RedisClient
+	}
+	addr := os.Getenv("REDIS_ADDR")
+	return redis.NewClient(&redis.Options{
+		Addr:     addr,
+		Password: "",
+		DB:       0,
+	})
+}
+
 func (c *Container) GetEnviorment() string {
 	return c.env
 }
-func (c *Container) GetMongoClient() *mongo.Client { //ovo pozivam preko kontejnera
+
+func (c *Container) GetMongoClient() *mongo.Client { // ovo pozivam preko kontejnera
 
 	if c.Client != nil {
 		return c.Client
 	}
 	uri := os.Getenv("MONGODB_URI")
 
-	//client option
+	// client option
 	clientOption := options.Client().ApplyURI(uri)
 
-	//connect to mongoDB
+	// connect to mongoDB
 	client, err := mongo.Connect(context.Background(), clientOption)
-
 	if err != nil {
 		log.Fatal(err)
 	}
 	c.Client = client
 	return c.Client
-
 }
 
 func (c *Container) GetMongoDatabase() *mongo.Database {
@@ -64,4 +78,8 @@ func (c *Container) GetMongoCollection(col string) *mongo.Collection {
 
 func (c *Container) GetNetflixRepository() repositories.NetflixInterface {
 	return repositories.New(c.GetMongoCollection("watchlist"))
+}
+
+func (c *Container) GetRedisCacheRepository() cache.RedisCacheInterface {
+	return cache.NewRedisCache(c.GetRedisClient())
 }

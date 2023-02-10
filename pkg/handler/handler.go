@@ -2,9 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/urosradivojevic/health/pkg/cache"
 	"github.com/urosradivojevic/health/pkg/model"
 	"github.com/urosradivojevic/health/pkg/repositories"
 )
@@ -23,7 +25,7 @@ import (
 // 	}
 // }
 
-func CreateMovie(repo repositories.NetflixInterface) fiber.Handler {
+func CreateMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var movie model.Netflix
 		if err := c.BodyParser(&movie); err != nil {
@@ -31,17 +33,51 @@ func CreateMovie(repo repositories.NetflixInterface) fiber.Handler {
 				"errors": err.Error(),
 			})
 		}
-		err := repo.InsertOneMovie(movie)
+		movieId, err := repo.InsertOneMovie(movie)
 		if err != nil {
 			return err
 		}
+		movie.ID = movieId
+		err = redis.SetMovie(c.UserContext(), movie)
+		if err != nil {
+			return err
+		}
+
 		return c.JSON(movie)
 	}
 }
 
-func GetMovies(repo repositories.NetflixInterface) fiber.Handler {
+func GetMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		movieId := c.Params("id")
+		m := model.Netflix{}
+		var movie1 model.Netflix
+		movie, err := redis.Get(c.UserContext(), movieId)
+		if err != nil {
+			fmt.Println("Object not in cache, searcing in database. Error:", err)
+		}
+		if movie == m {
+			movie1, err = repo.GetOneMovie(movieId)
+			if err != nil {
+				return err
+			}
+			if err = redis.SetMovie(c.UserContext(), movie1); err != nil {
+				return err
+			}
+
+			fmt.Println("Object returned from database and inserted in cache.")
+			return c.JSON(movie1)
+		}
+		fmt.Println("Object returned from cache.")
+		return c.JSON(movie)
+	}
+}
+
+func GetMovies(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movies, err := repo.GetAllMovies()
+		// if movie, err = redis.Get(c.UserContext(), "1");
+
 		if err != nil {
 			return err
 		}
@@ -63,11 +99,13 @@ func MarkAsWatched(repo repositories.NetflixInterface) fiber.Handler {
 	}
 }
 
-func DeleteMovie(repo repositories.NetflixInterface) fiber.Handler {
+func DeleteMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movieId := c.Params("id")
-		err := repo.DeleteOneMovie(movieId)
-		if err != nil {
+		if err := redis.Delete(c.UserContext(), movieId); err != nil {
+			return err
+		}
+		if err := repo.DeleteOneMovie(movieId); err != nil {
 			return err
 		}
 		return c.JSON(movieId)

@@ -14,5 +14,5 @@ func TestGetMovies_Success(t *testing.T) {
 	t.Setenv("MONGODB_DB", "netflix")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Get("/movies", handler.GetMovies(c.GetNetflixRepository()))
+	app.Get("/movies", handler.GetMovies(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 }
