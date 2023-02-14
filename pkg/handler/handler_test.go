@@ -41,7 +41,7 @@ func TestGetMovie_Success(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/movie/63ea5a4bddc25714e92bfc1e", nil)
 
 	// Act
-	res, err := app.Test(req)
+	res, _ := app.Test(req)
 	// when  kad ti dam ovo rezulat funkcija(ovo)
 	// given result
 	// then ocekujem da mi je rezultat to
