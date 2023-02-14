@@ -43,13 +43,16 @@ func CreateMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInter
 			return err
 		}
 
-		return c.JSON(movie)
+		return c.Status(fiber.StatusCreated).JSON(movie)
 	}
 }
 
 func GetMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movieId := c.Params("id")
+		if len(movieId) != 24 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"msg": "Invalid mongoID"})
+		}
 		m := model.Netflix{}
 		var movie1 model.Netflix
 		movie, err := redis.Get(c.UserContext(), movieId)
@@ -76,38 +79,43 @@ func GetMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterfac
 func GetMovies(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movies, err := repo.GetAllMovies()
-		// if movie, err = redis.Get(c.UserContext(), "1");
 
 		if err != nil {
 			return err
 		}
 		file, _ := json.MarshalIndent(movies, "", " ")
 		_ = ioutil.WriteFile("test.json", file, 0o644)
-		return c.JSON(movies)
+		return c.Status(fiber.StatusOK).JSON(movies)
 	}
 }
 
 func MarkAsWatched(repo repositories.NetflixInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movieId := c.Params("id")
+		if len(movieId) != 24 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"msg": "Invalid mongoID"})
+		}
 		err := repo.UpdateOneMovie(movieId)
 		if err != nil {
 			return err
 		}
 
-		return c.JSON(movieId)
+		return c.Status(fiber.StatusNoContent).JSON(movieId)
 	}
 }
 
 func DeleteMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movieId := c.Params("id")
+		if len(movieId) != 24 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"msg": "Invalid mongoID"})
+		}
 		if err := redis.Delete(c.UserContext(), movieId); err != nil {
 			return err
 		}
 		if err := repo.DeleteOneMovie(movieId); err != nil {
 			return err
 		}
-		return c.JSON(movieId)
+		return c.Status(fiber.StatusNoContent).JSON(movieId)
 	}
 }
