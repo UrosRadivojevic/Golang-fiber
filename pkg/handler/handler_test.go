@@ -3,7 +3,8 @@ package handler_test
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -47,7 +48,7 @@ func TestGetMovie_Success(t *testing.T) {
 	// then ocekujem da mi je rezultat to
 
 	movie := model.Netflix{}
-	bytes, err := ioutil.ReadAll(res.Body)
+	bytes, err := io.ReadAll(res.Body)
 	defer res.Body.Close()
 	_ = json.Unmarshal(bytes, &movie)
 
@@ -133,12 +134,13 @@ func TestCreateMovie_Success(t *testing.T) {
 	// 	"leadrole": "Bruce"
 	// }`)
 	b, _ := json.Marshal(data)
+	fmt.Println(bytes.NewBuffer(b))
 	req := httptest.NewRequest(http.MethodPost, "/movie", bytes.NewBuffer(b))
 	//Act
 	res, err := app.Test(req)
 
 	movie := model.Netflix{}
-	bytes, _ := ioutil.ReadAll(res.Body)
+	bytes, _ := io.ReadAll(res.Body)
 	defer res.Body.Close()
 	_ = json.Unmarshal(bytes, &movie)
 

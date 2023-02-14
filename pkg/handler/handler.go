@@ -1,14 +1,13 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/urosradivojevic/health/pkg/cache"
 	"github.com/urosradivojevic/health/pkg/model"
 	"github.com/urosradivojevic/health/pkg/repositories"
+	"github.com/urosradivojevic/health/pkg/requests"
 )
 
 // var startTime time.Time
@@ -27,17 +26,26 @@ import (
 
 func CreateMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var movie model.Netflix
-		if err := c.BodyParser(&movie); err != nil {
+		var request requests.CreateMovieRequest
+
+		if err := c.BodyParser(&request); err != nil {
 			return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 				"errors": err.Error(),
 			})
 		}
-		movieId, err := repo.InsertOneMovie(movie)
+
+		movieId, err := repo.InsertOneMovie(request)
 		if err != nil {
 			return err
 		}
-		movie.ID = movieId
+		movie := model.Netflix{
+			ID:       movieId,
+			Movie:    request.Movie,
+			Watched:  request.Watched,
+			Year:     request.Year,
+			LeadRole: request.LeadRole,
+		}
+
 		err = redis.SetMovie(c.UserContext(), movie)
 		if err != nil {
 			return err
@@ -83,8 +91,7 @@ func GetMovies(repo repositories.NetflixInterface, redis cache.RedisCacheInterfa
 		if err != nil {
 			return err
 		}
-		file, _ := json.MarshalIndent(movies, "", " ")
-		_ = ioutil.WriteFile("test.json", file, 0o644)
+
 		return c.Status(fiber.StatusOK).JSON(movies)
 	}
 }

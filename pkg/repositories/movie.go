@@ -12,13 +12,14 @@ import (
 	"context"
 
 	"github.com/urosradivojevic/health/pkg/model"
+	"github.com/urosradivojevic/health/pkg/requests"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type NetflixInterface interface {
-	InsertOneMovie(movie model.Netflix) (primitive.ObjectID, error)
+	InsertOneMovie(movie requests.CreateMovieRequest) (primitive.ObjectID, error)
 	GetAllMovies() ([]primitive.M, error)
 	UpdateOneMovie(movieId string) error
 	DeleteOneMovie(movieId string) error
@@ -34,7 +35,7 @@ func New(col *mongo.Collection) *Netflix {
 		col: col,
 	}
 }
-func (n *Netflix) InsertOneMovie(movie model.Netflix) (primitive.ObjectID, error) {
+func (n *Netflix) InsertOneMovie(movie requests.CreateMovieRequest) (primitive.ObjectID, error) {
 	m, err := n.col.InsertOne(context.Background(), movie)
 	if err != nil {
 		return primitive.NilObjectID, err
