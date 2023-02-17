@@ -35,7 +35,7 @@ require (
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/swaggo/files v1.0.0 // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
-	github.com/urfave/cli/v2 v2.24.3 // indirect
+	github.com/urfave/cli/v2 v2.24.4 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect

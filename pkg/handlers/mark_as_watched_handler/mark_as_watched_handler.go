@@ -18,7 +18,7 @@ type message struct {
 //			@Accept			  json
 //			@Produce		  json
 //			@Success		 204
-//		 @Failure      	 400   {object}    message
+//		 @Failure      	 400   {object}    message "Invalid Object ID"
 //	   @Param id   path string true "Movie ID"
 //		@Router			 /movie/{id} [put]
 func MarkAsWatched(repo repositories.NetflixInterface) fiber.Handler {

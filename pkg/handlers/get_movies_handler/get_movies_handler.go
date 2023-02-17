@@ -18,7 +18,6 @@ import (
 func GetMovies(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movies, err := repo.GetAllMovies()
-
 		if err != nil {
 			return err
 		}

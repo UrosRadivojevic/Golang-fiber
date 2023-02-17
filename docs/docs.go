@@ -55,7 +55,7 @@ const docTemplate = `{
                         }
                     },
                     "422": {
-                        "description": "Unprocessable Entity",
+                        "description": "Validation failed",
                         "schema": {
                             "$ref": "#/definitions/create_movie_handler.message"
                         }
@@ -78,6 +78,8 @@ const docTemplate = `{
                 "summary": "Get movie",
                 "parameters": [
                     {
+                        "maxLength": 24,
+                        "minLength": 24,
                         "type": "string",
                         "description": "Movie ID",
                         "name": "id",
@@ -93,7 +95,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid object ID",
                         "schema": {
                             "$ref": "#/definitions/get_movie_handler.message"
                         }
@@ -126,7 +128,7 @@ const docTemplate = `{
                         "description": "No Content"
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid Object ID",
                         "schema": {
                             "$ref": "#/definitions/mark_as_watched_handler.message"
                         }
@@ -159,7 +161,7 @@ const docTemplate = `{
                         "description": "No Content"
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid Object ID",
                         "schema": {
                             "$ref": "#/definitions/delete_movie_handler.message"
                         }
@@ -249,6 +251,12 @@ const docTemplate = `{
         },
         "requests.CreateMovieRequest": {
             "type": "object",
+            "required": [
+                "leadrole",
+                "movie",
+                "watched",
+                "year"
+            ],
             "properties": {
                 "leadrole": {
                     "type": "string"

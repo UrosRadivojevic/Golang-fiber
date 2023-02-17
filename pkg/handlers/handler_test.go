@@ -66,7 +66,7 @@ func TestGetMovie_Success(t *testing.T) {
 }
 
 func TestGetMovies_InvalidObjectID(t *testing.T) {
-	//arrange
+	// arrange
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -76,18 +76,17 @@ func TestGetMovies_InvalidObjectID(t *testing.T) {
 	app.Get("/movie/:id", get_movie_handler.GetMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodGet, "/movie/63e684f9afd8b30f56511", nil)
 
-	//act
+	// act
 
 	res, _ := app.Test(req)
 
-	//Assert
+	// Assert
 
 	assert.Equal(fiber.StatusBadRequest, res.StatusCode)
-
 }
 
 func TestCreateMovie_InvalidEntity(t *testing.T) {
-	//arrange
+	// arrange
 
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
@@ -101,17 +100,16 @@ func TestCreateMovie_InvalidEntity(t *testing.T) {
 		aaaaa
 	}`)
 	req := httptest.NewRequest(http.MethodPost, "/movie", bytes.NewBuffer(body))
-	//Act
+	// Act
 	res, err := app.Test(req)
 
-	//Assert
+	// Assert
 	assert.NoError(err)
 	assert.Equal(fiber.StatusUnprocessableEntity, res.StatusCode)
-
 }
 
 func TestCreateMovie_Success(t *testing.T) {
-	//arrange
+	// arrange
 	data := struct {
 		Movie    string `json:"movie"`
 		Watched  bool   `json:"watched"`
@@ -130,16 +128,10 @@ func TestCreateMovie_Success(t *testing.T) {
 	c := container.New("testing")
 	app := fiber.New()
 	app.Post("/movie", create_movie_handler.CreateMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
-	// body := []byte(`{
-	// 	"movie": "DieHard",
-	// 	"watched": true,
-	// 	"year": 2005,
-	// 	"leadrole": "Bruce"
-	// }`)
 	b, _ := json.Marshal(data)
 	req := httptest.NewRequest(http.MethodPost, "/movie", bytes.NewBuffer(b))
-	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	//Act
+	req.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSONCharsetUTF8)
+	// Act
 	res, err := app.Test(req)
 
 	movie := model.Netflix{}
@@ -147,7 +139,7 @@ func TestCreateMovie_Success(t *testing.T) {
 	defer res.Body.Close()
 	_ = json.Unmarshal(bytes, &movie)
 
-	//Assert
+	// Assert
 
 	assert.NoError(err)
 	assert.Equal(fiber.StatusCreated, res.StatusCode)
@@ -158,7 +150,7 @@ func TestCreateMovie_Success(t *testing.T) {
 }
 
 func TestDeleteMovie_Success(t *testing.T) {
-	//arrange
+	// arrange
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -168,16 +160,16 @@ func TestDeleteMovie_Success(t *testing.T) {
 	app.Delete("/movie/:id", delete_movie_handler.DeleteMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodDelete, "/movie/63e684f9afd8b30f56511e46", nil)
 
-	//act
+	// act
 	res, err := app.Test(req)
 
-	//assert
+	// assert
 	assert.NoError(err)
 	assert.Equal(fiber.StatusNoContent, res.StatusCode)
 }
 
 func TestDeleteMovie_InvalidObjectID(t *testing.T) {
-	//arrange
+	// arrange
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -187,17 +179,17 @@ func TestDeleteMovie_InvalidObjectID(t *testing.T) {
 	app.Delete("/movie/:id", delete_movie_handler.DeleteMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodDelete, "/movie/63e684f9afd8b30f", nil)
 
-	//act
+	// act
 
 	res, _ := app.Test(req)
 
-	//Assert
+	// Assert
 
 	assert.Equal(fiber.StatusBadRequest, res.StatusCode)
 }
 
 func TestGetMovies_Success(t *testing.T) {
-	//arrange
+	// arrange
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -207,16 +199,16 @@ func TestGetMovies_Success(t *testing.T) {
 	app.Get("/movies", get_movies_handler.GetMovies(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodGet, "/movies", nil)
 
-	//act
+	// act
 	res, err := app.Test(req)
 
-	//assert
+	// assert
 	assert.NoError(err)
 	assert.Equal(fiber.StatusOK, res.StatusCode)
 }
 
 func TestMarkedAsWatched_InvalidObjectID(t *testing.T) {
-	//arrange
+	// arrange
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -226,17 +218,17 @@ func TestMarkedAsWatched_InvalidObjectID(t *testing.T) {
 	app.Put("/movie/:id", mark_as_watched_handler.MarkAsWatched(c.GetNetflixRepository()))
 	req := httptest.NewRequest(http.MethodPut, "/movie/63e684f9afd8b30f", nil)
 
-	//act
+	// act
 
 	res, _ := app.Test(req)
 
-	//Assert
+	// Assert
 
 	assert.Equal(fiber.StatusBadRequest, res.StatusCode)
 }
 
 func TestMarkedAsWatched_Success(t *testing.T) {
-	//arrange
+	// arrange
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -246,11 +238,10 @@ func TestMarkedAsWatched_Success(t *testing.T) {
 	app.Put("/movie/:id", mark_as_watched_handler.MarkAsWatched(c.GetNetflixRepository()))
 	req := httptest.NewRequest(http.MethodPut, "/movie/63e22d6a22d15a2f27e6ba70", nil)
 
-	//act
+	// act
 	res, err := app.Test(req)
 
-	//assert
+	// assert
 	assert.NoError(err)
 	assert.Equal(fiber.StatusNoContent, res.StatusCode)
-
 }

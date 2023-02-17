@@ -43,6 +43,11 @@ definitions:
         type: boolean
       year:
         type: integer
+    required:
+    - leadrole
+    - movie
+    - watched
+    - year
     type: object
 host: localhost:3000
 info:
@@ -77,7 +82,7 @@ paths:
           schema:
             $ref: '#/definitions/model.Netflix'
         "422":
-          description: Unprocessable Entity
+          description: Validation failed
           schema:
             $ref: '#/definitions/create_movie_handler.message'
       summary: Create movie
@@ -100,7 +105,7 @@ paths:
         "204":
           description: No Content
         "400":
-          description: Bad Request
+          description: Invalid Object ID
           schema:
             $ref: '#/definitions/delete_movie_handler.message'
       summary: Delete movie
@@ -113,6 +118,8 @@ paths:
       parameters:
       - description: Movie ID
         in: path
+        maxLength: 24
+        minLength: 24
         name: id
         required: true
         type: string
@@ -124,7 +131,7 @@ paths:
           schema:
             $ref: '#/definitions/model.Netflix'
         "400":
-          description: Bad Request
+          description: Invalid object ID
           schema:
             $ref: '#/definitions/get_movie_handler.message'
       summary: Get movie
@@ -146,7 +153,7 @@ paths:
         "204":
           description: No Content
         "400":
-          description: Bad Request
+          description: Invalid Object ID
           schema:
             $ref: '#/definitions/mark_as_watched_handler.message'
       summary: Update movie

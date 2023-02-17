@@ -25,6 +25,7 @@ func New(env string) *Container {
 		env:              env,
 	}
 }
+
 func (c *Container) GetRedisClient() *redis.Client {
 	if c.RedisClient != nil {
 		return c.RedisClient

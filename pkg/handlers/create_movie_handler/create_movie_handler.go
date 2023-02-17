@@ -21,7 +21,7 @@ type message struct {
 //		@Accept			  json
 //		@Produce		  json
 //		@Success		 201	{object}	model.Netflix
-//	 @Failure      	 422   {object}    message
+//	 @Failure      	 422   {object}    message "Validation failed"
 //	 @Param request body requests.CreateMovieRequest true "Movie"
 //		@Router			 /movie [post]
 func CreateMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
@@ -36,7 +36,9 @@ func CreateMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInter
 		validate := validator.New()
 		err := validate.Struct(request)
 		if err != nil {
-			return err
+			return c.Status(fiber.StatusUnprocessableEntity).JSON(message{
+				Message: "Validation failed",
+			})
 		}
 		movieId, err := repo.InsertOneMovie(request)
 		if err != nil {

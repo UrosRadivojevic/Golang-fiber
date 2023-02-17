@@ -12,7 +12,7 @@ import (
 )
 
 func TestInsertOneMovie_Success(t *testing.T) {
-	//arrange
+	// arrange
 	// t.Parallel()
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -27,11 +27,11 @@ func TestInsertOneMovie_Success(t *testing.T) {
 		LeadRole: "Method Man and Redman",
 	}
 
-	//act
+	// act
 	id, err := movieRepository.InsertOneMovie(movie)
 	movie1, err1 := movieRepository.GetOneMovie(id.Hex())
 
-	//assert
+	// assert
 	assert.NoError(err1)
 	assert.NotEmpty(id)
 	assert.NoError(err)
@@ -41,11 +41,10 @@ func TestInsertOneMovie_Success(t *testing.T) {
 	assert.Equal(movie1.LeadRole, movie.LeadRole)
 	assert.Equal(movie1.Watched, movie.Watched)
 	assert.Equal(movie1.Year, movie.Year)
-
 }
 
 func TestUpdateOneMovie_Success(t *testing.T) {
-	//arrange
+	// arrange
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
 	assert := require.New(t)
@@ -59,21 +58,21 @@ func TestUpdateOneMovie_Success(t *testing.T) {
 		LeadRole: "Method Man and Redman",
 	}
 	t.Cleanup(func() {
-		col.DeleteMany(context.Background(), bson.D{})
+		_, _ = col.DeleteMany(context.Background(), bson.D{})
 	})
 	id, _ := movieRepository.InsertOneMovie(movie)
 
-	//act
+	// act
 	err := movieRepository.UpdateOneMovie(id.Hex())
 	movie1, _ := movieRepository.GetOneMovie(id.Hex())
 
-	//assert
+	// assert
 	assert.NoError(err)
 	assert.True(movie1.Watched)
 }
 
 func TestDeleteOneMovie_Success(t *testing.T) {
-	//arrange
+	// arrange
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -87,22 +86,21 @@ func TestDeleteOneMovie_Success(t *testing.T) {
 		LeadRole: "Method Man and Redman",
 	}
 	t.Cleanup(func() {
-		col.DeleteMany(context.Background(), bson.D{})
+		_, _ = col.DeleteMany(context.Background(), bson.D{})
 	})
 	id, _ := movieRepository.InsertOneMovie(movie)
 
-	//act
+	// act
 	err := movieRepository.DeleteOneMovie(id.Hex())
 	movies, _ := movieRepository.GetAllMovies()
 
-	//assert
+	// assert
 	assert.NoError(err)
 	assert.Empty(movies)
-
 }
 
 func TestGetAllMovies_Success(t *testing.T) {
-	//arrange
+	// arrange
 	assert := require.New(t)
 	t.Setenv("MONGODB_URI", "mongodb://localhost:27017/")
 	t.Setenv("MONGODB_DB", "netflix")
@@ -116,14 +114,14 @@ func TestGetAllMovies_Success(t *testing.T) {
 		LeadRole: "Method Man and Redman",
 	}
 	t.Cleanup(func() {
-		col.DeleteMany(context.Background(), bson.D{})
+		_, _ = col.DeleteMany(context.Background(), bson.D{})
 	})
 	id, _ := movieRepository.InsertOneMovie(movie)
 
-	//act
+	// act
 	movies, err := movieRepository.GetAllMovies()
 
-	//assert
+	// assert
 	assert.NoError(err)
 	assert.Equal(movies[0].ID.Hex(), id.Hex())
 	assert.Equal(movies[0].Movie, movie.Movie)

@@ -25,7 +25,6 @@ func NewRedisCache(c *redis.Client) *RedisCache {
 }
 
 func (cache *RedisCache) SetMovie(ctx context.Context, value model.Netflix) error {
-
 	json, err := json.Marshal(value)
 	if err != nil {
 		return err
@@ -38,7 +37,6 @@ func (cache *RedisCache) SetMovie(ctx context.Context, value model.Netflix) erro
 }
 
 func (cache *RedisCache) Get(ctx context.Context, key string) (model.Netflix, error) {
-
 	val, err := cache.client.HGet(ctx, "movies", key).Result()
 	if err != nil {
 		return model.Netflix{}, err

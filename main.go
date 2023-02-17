@@ -48,7 +48,9 @@ func main() {
 			log.Fatal("Error loading .env file")
 		}
 	}
-	app.Get("/swagger/*", swagger.HandlerDefault)
+	if env != "production" {
+		app.Get("/swagger/*", swagger.HandlerDefault)
+	}
 
 	routes.SetUpRoutes(app, c)
 

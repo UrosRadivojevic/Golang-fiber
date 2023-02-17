@@ -9,23 +9,22 @@ import (
 )
 
 func TestShouldReturnErrorsWhenEmpty(t *testing.T) {
-	//arrange
+	// arrange
 	t.Parallel()
 	assert := require.New(t)
 	req := requests.CreateMovieRequest{}
 	val := validator.New()
 
-	//act
+	// act
 	err := val.Struct(req).(validator.ValidationErrors)
 
-	//assert
+	// assert
 	assert.Error(err)
 	assert.Len(err, 4)
-
 }
 
 func TestValide_Success(t *testing.T) {
-	//arrange
+	// arrange
 	t.Parallel()
 	assert := require.New(t)
 	req := requests.CreateMovieRequest{
@@ -35,14 +34,14 @@ func TestValide_Success(t *testing.T) {
 		LeadRole: "Bruce",
 	}
 	val := validator.New()
-	//act
+	// act
 	err := val.Struct(req)
-	//assert
+	// assert
 	assert.Nil(err)
 }
 
 func TestPartial(t *testing.T) {
-	//arrange
+	// arrange
 	t.Parallel()
 	assert := require.New(t)
 	req := requests.CreateMovieRequest{
@@ -52,9 +51,9 @@ func TestPartial(t *testing.T) {
 		LeadRole: "",
 	}
 	val := validator.New()
-	//act
+	// act
 	err := val.Struct(req).(validator.ValidationErrors)
-	//assert
+	// assert
 	assert.Error(err)
 	assert.Len(err, 2)
 }

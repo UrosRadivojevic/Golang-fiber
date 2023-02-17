@@ -2,11 +2,11 @@ package repositories
 
 // napravi interjfejs i strukturka koja ce da implementira interjfejs
 
-//apstraktuj db lajer
+// apstraktuj db lajer
 
-//movie repository interfejs i strutkura
+// movie repository interfejs i strutkura
 
-//struktura sve implementira
+// struktura sve implementira
 
 import (
 	"context"
@@ -35,6 +35,7 @@ func New(col *mongo.Collection) *Netflix {
 		col: col,
 	}
 }
+
 func (n *Netflix) InsertOneMovie(movie requests.CreateMovieRequest) (primitive.ObjectID, error) {
 	m, err := n.col.InsertOne(context.Background(), movie)
 	if err != nil {
@@ -62,6 +63,7 @@ func (n *Netflix) GetAllMovies() ([]model.Netflix, error) {
 	defer cursor.Close(context.Background())
 	return movies, nil
 }
+
 func (n *Netflix) GetOneMovie(movieId string) (model.Netflix, error) {
 	id, _ := primitive.ObjectIDFromHex(movieId)
 	filter := bson.M{"_id": id}
@@ -79,7 +81,6 @@ func (n *Netflix) UpdateOneMovie(movieId string) error {
 	update := bson.M{"$set": bson.M{"watched": true}}
 
 	_, err := n.col.UpdateOne(context.Background(), filter, update)
-
 	if err != nil {
 		return err
 	}

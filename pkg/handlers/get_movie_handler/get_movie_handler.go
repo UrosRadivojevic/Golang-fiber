@@ -22,13 +22,12 @@ type message struct {
 //			@Accept			  json
 //			@Produce		  json
 //			@Success		 200	{object}	model.Netflix
-//		 @Failure      	 400   {object}    message
-//	   @Param id   path string true "Movie ID"
+//		 @Failure      	 400   {object}    message "Invalid object ID"
+//	   @Param id   path string true "Movie ID" minlength(24) maxlength(24)
 //		@Router			 /movie/{id} [get]
 func GetMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movieId := c.Params("id")
-		// primitive.IsValidObjectID(movieId)
 		if !primitive.IsValidObjectID(movieId) {
 			return c.Status(fiber.StatusBadRequest).JSON(message{
 				Message: "Invalid ID.",
