@@ -3,7 +3,6 @@ package handler_test
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -12,7 +11,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/require"
 	"github.com/urosradivojevic/health/pkg/container"
-	"github.com/urosradivojevic/health/pkg/handler"
+	"github.com/urosradivojevic/health/pkg/handlers/create_movie_handler"
+	"github.com/urosradivojevic/health/pkg/handlers/delete_movie_handler"
+	"github.com/urosradivojevic/health/pkg/handlers/get_movie_handler"
+	"github.com/urosradivojevic/health/pkg/handlers/get_movies_handler"
+	"github.com/urosradivojevic/health/pkg/handlers/mark_as_watched_handler"
 	"github.com/urosradivojevic/health/pkg/model"
 )
 
@@ -38,7 +41,7 @@ func TestGetMovie_Success(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Get("/movie/:id", handler.GetMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Get("/movie/:id", get_movie_handler.GetMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodGet, "/movie/63ea5a4bddc25714e92bfc1e", nil)
 
 	// Act
@@ -70,7 +73,7 @@ func TestGetMovies_InvalidObjectID(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Get("/movie/:id", handler.GetMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Get("/movie/:id", get_movie_handler.GetMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodGet, "/movie/63e684f9afd8b30f56511", nil)
 
 	//act
@@ -92,7 +95,7 @@ func TestCreateMovie_InvalidEntity(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Post("/movie", handler.CreateMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Post("/movie", create_movie_handler.CreateMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 
 	body := []byte(`{
 		aaaaa
@@ -126,7 +129,7 @@ func TestCreateMovie_Success(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Post("/movie", handler.CreateMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Post("/movie", create_movie_handler.CreateMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	// body := []byte(`{
 	// 	"movie": "DieHard",
 	// 	"watched": true,
@@ -134,8 +137,8 @@ func TestCreateMovie_Success(t *testing.T) {
 	// 	"leadrole": "Bruce"
 	// }`)
 	b, _ := json.Marshal(data)
-	fmt.Println(bytes.NewBuffer(b))
 	req := httptest.NewRequest(http.MethodPost, "/movie", bytes.NewBuffer(b))
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	//Act
 	res, err := app.Test(req)
 
@@ -162,7 +165,7 @@ func TestDeleteMovie_Success(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Delete("/movie/:id", handler.DeleteMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Delete("/movie/:id", delete_movie_handler.DeleteMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodDelete, "/movie/63e684f9afd8b30f56511e46", nil)
 
 	//act
@@ -181,7 +184,7 @@ func TestDeleteMovie_InvalidObjectID(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Delete("/movie/:id", handler.DeleteMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Delete("/movie/:id", delete_movie_handler.DeleteMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodDelete, "/movie/63e684f9afd8b30f", nil)
 
 	//act
@@ -201,7 +204,7 @@ func TestGetMovies_Success(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Get("/movies", handler.GetMovies(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Get("/movies", get_movies_handler.GetMovies(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	req := httptest.NewRequest(http.MethodGet, "/movies", nil)
 
 	//act
@@ -220,7 +223,7 @@ func TestMarkedAsWatched_InvalidObjectID(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Put("/movie/:id", handler.MarkAsWatched(c.GetNetflixRepository()))
+	app.Put("/movie/:id", mark_as_watched_handler.MarkAsWatched(c.GetNetflixRepository()))
 	req := httptest.NewRequest(http.MethodPut, "/movie/63e684f9afd8b30f", nil)
 
 	//act
@@ -240,7 +243,7 @@ func TestMarkedAsWatched_Success(t *testing.T) {
 	t.Setenv("REDIS_ADDR", "localhost:6379")
 	c := container.New("testing")
 	app := fiber.New()
-	app.Put("/movie/:id", handler.MarkAsWatched(c.GetNetflixRepository()))
+	app.Put("/movie/:id", mark_as_watched_handler.MarkAsWatched(c.GetNetflixRepository()))
 	req := httptest.NewRequest(http.MethodPut, "/movie/63e22d6a22d15a2f27e6ba70", nil)
 
 	//act

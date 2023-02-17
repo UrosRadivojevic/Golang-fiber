@@ -20,7 +20,7 @@ import (
 
 type NetflixInterface interface {
 	InsertOneMovie(movie requests.CreateMovieRequest) (primitive.ObjectID, error)
-	GetAllMovies() ([]primitive.M, error)
+	GetAllMovies() ([]model.Netflix, error)
 	UpdateOneMovie(movieId string) error
 	DeleteOneMovie(movieId string) error
 	GetOneMovie(movieId string) (model.Netflix, error)
@@ -44,15 +44,15 @@ func (n *Netflix) InsertOneMovie(movie requests.CreateMovieRequest) (primitive.O
 	return id, nil
 }
 
-func (n *Netflix) GetAllMovies() ([]primitive.M, error) {
+func (n *Netflix) GetAllMovies() ([]model.Netflix, error) {
 	cursor, err := n.col.Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
-	var movies []primitive.M
+	var movies []model.Netflix
 
 	for cursor.Next(context.Background()) {
-		var movie bson.M
+		var movie model.Netflix
 		err := cursor.Decode(&movie)
 		if err != nil {
 			return nil, err

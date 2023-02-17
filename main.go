@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 
+	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gkampitakis/fiber-modules/gracefulshutdown"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+	_ "github.com/urosradivojevic/health/docs"
 	"github.com/urosradivojevic/health/pkg/container"
 	"github.com/urosradivojevic/health/pkg/routes"
 )
@@ -19,6 +21,16 @@ func init() {
 	flag.Parse()
 }
 
+// @title			Fiber Example API
+// @version		1.0
+// @description	This is a sample swagger for Fiber
+// @termsOfService	http://swagger.io/terms/
+// @contact.name	API Support
+// @contact.email	fiber@swagger.io
+// @license.name	Apache 2.0
+// @license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+// @host			localhost:3000
+// @BasePath		/
 func main() {
 	c := container.New(flagvar)
 	fmt.Printf("%v\n", flagvar)
@@ -36,6 +48,7 @@ func main() {
 			log.Fatal("Error loading .env file")
 		}
 	}
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	routes.SetUpRoutes(app, c)
 

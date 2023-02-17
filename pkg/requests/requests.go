@@ -1,8 +1,8 @@
 package requests
 
 type CreateMovieRequest struct {
-	Movie    string `json:"movie"`
-	Watched  bool   `json:"watched"`
-	Year     int    `json:"year"`
-	LeadRole string `json:"leadrole"`
+	Movie    string `json:"movie" validate:"required"`
+	Watched  bool   `json:"watched" validate:"required"`
+	Year     int    `json:"year" validate:"required"`
+	LeadRole string `json:"leadrole" validate:"required"`
 }

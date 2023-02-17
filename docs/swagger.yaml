@@ -1,0 +1,172 @@
+basePath: /
+definitions:
+  create_movie_handler.message:
+    properties:
+      message:
+        type: string
+    type: object
+  delete_movie_handler.message:
+    properties:
+      message:
+        type: string
+    type: object
+  get_movie_handler.message:
+    properties:
+      message:
+        type: string
+    type: object
+  mark_as_watched_handler.message:
+    properties:
+      message:
+        type: string
+    type: object
+  model.Netflix:
+    properties:
+      _id:
+        type: string
+      leadrole:
+        type: string
+      movie:
+        type: string
+      watched:
+        type: boolean
+      year:
+        type: integer
+    type: object
+  requests.CreateMovieRequest:
+    properties:
+      leadrole:
+        type: string
+      movie:
+        type: string
+      watched:
+        type: boolean
+      year:
+        type: integer
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  description: This is a sample swagger for Fiber
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Fiber Example API
+  version: "1.0"
+paths:
+  /movie:
+    post:
+      consumes:
+      - application/json
+      description: Create movie
+      parameters:
+      - description: Movie
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateMovieRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Netflix'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/create_movie_handler.message'
+      summary: Create movie
+      tags:
+      - movies
+  /movie/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes movie from db by movieID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delete_movie_handler.message'
+      summary: Delete movie
+      tags:
+      - movies
+    get:
+      consumes:
+      - application/json
+      description: Returns movie from db by movieID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Netflix'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/get_movie_handler.message'
+      summary: Get movie
+      tags:
+      - movies
+    put:
+      consumes:
+      - application/json
+      description: Updates movie filed watched to true
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/mark_as_watched_handler.message'
+      summary: Update movie
+      tags:
+      - movies
+  /movies:
+    get:
+      consumes:
+      - application/json
+      description: Returns all movies from db
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Netflix'
+            type: array
+      summary: Get movies
+      tags:
+      - movies
+swagger: "2.0"
