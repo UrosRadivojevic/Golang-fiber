@@ -82,5 +82,5 @@ func (c *Container) GetNetflixRepository() repositories.NetflixInterface {
 }
 
 func (c *Container) GetRedisCacheRepository() cache.RedisCacheInterface {
-	return cache.NewRedisCache(c.GetRedisClient())
+	return cache.New(c.GetRedisClient())
 }
