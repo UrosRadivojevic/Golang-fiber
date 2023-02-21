@@ -35,7 +35,7 @@ func (l LoginService) Login(username string, password string) (model.User, error
 	if err != nil {
 		return model.User{}, ErrUsernameNotFound
 	}
-	if l.hash.Verify(password, []byte(user.Password)) {
+	if !l.hash.Verify(password, []byte(user.Password)) {
 		return model.User{}, ErrInvalidCredentials
 	}
 	return user, nil
