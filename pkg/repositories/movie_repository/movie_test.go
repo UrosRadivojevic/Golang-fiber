@@ -1,4 +1,4 @@
-package repositories_test
+package movie_repository_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/urosradivojevic/health/pkg/container"
-	"github.com/urosradivojevic/health/pkg/repositories"
+	"github.com/urosradivojevic/health/pkg/repositories/movie_repository"
 	"github.com/urosradivojevic/health/pkg/requests"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -19,7 +19,7 @@ func TestInsertOneMovie_Success(t *testing.T) {
 	assert := require.New(t)
 	c := container.New("testing")
 	col := c.GetMongoCollection("watchlist")
-	movieRepository := repositories.New(col)
+	movieRepository := movie_repository.New(col)
 	movie := requests.CreateMovieRequest{
 		Movie:    "How High",
 		Watched:  true,
@@ -50,7 +50,7 @@ func TestUpdateOneMovie_Success(t *testing.T) {
 	assert := require.New(t)
 	c := container.New("testing")
 	col := c.GetMongoCollection("watchlist")
-	movieRepository := repositories.New(col)
+	movieRepository := movie_repository.New(col)
 	movie := requests.CreateMovieRequest{
 		Movie:    "How High",
 		Watched:  false,
@@ -78,7 +78,7 @@ func TestDeleteOneMovie_Success(t *testing.T) {
 	t.Setenv("MONGODB_DB", "netflix")
 	c := container.New("testing")
 	col := c.GetMongoCollection("watchlist")
-	movieRepository := repositories.New(col)
+	movieRepository := movie_repository.New(col)
 	movie := requests.CreateMovieRequest{
 		Movie:    "How High",
 		Watched:  false,
@@ -106,7 +106,7 @@ func TestGetAllMovies_Success(t *testing.T) {
 	t.Setenv("MONGODB_DB", "netflix")
 	c := container.New("testing")
 	col := c.GetMongoCollection("watchlist")
-	movieRepository := repositories.New(col)
+	movieRepository := movie_repository.New(col)
 	movie := requests.CreateMovieRequest{
 		Movie:    "How High",
 		Watched:  false,

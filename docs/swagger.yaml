@@ -15,6 +15,11 @@ definitions:
       message:
         type: string
     type: object
+  login_handler.message:
+    properties:
+      message:
+        type: string
+    type: object
   mark_as_watched_handler.message:
     properties:
       message:
@@ -33,6 +38,11 @@ definitions:
       year:
         type: integer
     type: object
+  register_handler.message:
+    properties:
+      message:
+        type: string
+    type: object
   requests.CreateMovieRequest:
     properties:
       leadrole:
@@ -49,6 +59,22 @@ definitions:
     - watched
     - year
     type: object
+  user_request.UserRequest:
+    properties:
+      _id:
+        type: string
+      firstname:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        type: string
+    required:
+    - firstname
+    - password
+    - username
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -62,6 +88,34 @@ info:
   title: Fiber Example API
   version: "1.0"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: User
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_request.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid login credentials
+          schema:
+            $ref: '#/definitions/login_handler.message'
+        "422":
+          description: Validation failed
+          schema:
+            $ref: '#/definitions/login_handler.message'
+      summary: Login user
+      tags:
+      - users
   /movie:
     post:
       consumes:
@@ -176,4 +230,28 @@ paths:
       summary: Get movies
       tags:
       - movies
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register user in database
+      parameters:
+      - description: User
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_request.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "422":
+          description: Validation failed
+          schema:
+            $ref: '#/definitions/register_handler.message'
+      summary: Register user
+      tags:
+      - users
 swagger: "2.0"

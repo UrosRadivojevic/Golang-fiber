@@ -7,7 +7,10 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/urosradivojevic/health/pkg/cache"
-	"github.com/urosradivojevic/health/pkg/repositories"
+	"github.com/urosradivojevic/health/pkg/repositories/movie_repository"
+	"github.com/urosradivojevic/health/pkg/repositories/user_repository"
+	"github.com/urosradivojevic/health/pkg/services/hasher"
+	"github.com/urosradivojevic/health/pkg/services/login"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -77,10 +80,26 @@ func (c *Container) GetMongoCollection(col string) *mongo.Collection {
 	return c.GetMongoDatabase().Collection(col)
 }
 
-func (c *Container) GetNetflixRepository() repositories.NetflixInterface {
-	return repositories.New(c.GetMongoCollection("watchlist"))
+func (c *Container) GetUserCollection(col string) *mongo.Collection {
+	return c.GetMongoDatabase().Collection(col)
+}
+
+func (c *Container) GetUserRpository() user_repository.Interface {
+	return user_repository.New(c.GetMongoCollection("users"))
+}
+
+func (c *Container) GetNetflixRepository() movie_repository.NetflixInterface {
+	return movie_repository.New(c.GetMongoCollection("watchlist"))
 }
 
 func (c *Container) GetRedisCacheRepository() cache.RedisCacheInterface {
 	return cache.New(c.GetRedisClient())
+}
+
+func (c *Container) GetHashRepository() hasher.Interface {
+	return hasher.New(1)
+}
+
+func (c *Container) GetLoginRepository() login.Interface {
+	return login.New(c.GetUserRpository(), c.GetHashRepository())
 }

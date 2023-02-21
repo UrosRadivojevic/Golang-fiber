@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/urosradivojevic/health/pkg/cache"
 	"github.com/urosradivojevic/health/pkg/model"
-	"github.com/urosradivojevic/health/pkg/repositories"
+	"github.com/urosradivojevic/health/pkg/repositories/movie_repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -25,7 +25,7 @@ type message struct {
 //		 @Failure      	 400   {object}    message "Invalid object ID"
 //	   @Param id   path string true "Movie ID" minlength(24) maxlength(24)
 //		@Router			 /movie/{id} [get]
-func GetMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
+func GetMovie(repo movie_repository.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movieId := c.Params("id")
 		if !primitive.IsValidObjectID(movieId) {

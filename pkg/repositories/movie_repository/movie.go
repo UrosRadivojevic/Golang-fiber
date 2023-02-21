@@ -1,4 +1,4 @@
-package repositories
+package movie_repository
 
 // napravi interjfejs i strukturka koja ce da implementira interjfejs
 

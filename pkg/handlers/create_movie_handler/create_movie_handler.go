@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/urosradivojevic/health/pkg/cache"
 	"github.com/urosradivojevic/health/pkg/model"
-	"github.com/urosradivojevic/health/pkg/repositories"
+	"github.com/urosradivojevic/health/pkg/repositories/movie_repository"
 	"github.com/urosradivojevic/health/pkg/requests"
 )
 
@@ -24,7 +24,7 @@ type message struct {
 //	 @Failure      	 422   {object}    message "Validation failed"
 //	 @Param request body requests.CreateMovieRequest true "Movie"
 //		@Router			 /movie [post]
-func CreateMovie(repo repositories.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
+func CreateMovie(repo movie_repository.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var request requests.CreateMovieRequest
 
