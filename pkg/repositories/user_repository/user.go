@@ -6,12 +6,13 @@ import (
 
 	"github.com/urosradivojevic/health/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Interface interface {
 	GetByUsername(ctx context.Context, username string) (model.User, error)
-	Register(ctx context.Context, user model.User) error
+	Register(ctx context.Context, user model.User) (primitive.ObjectID, error)
 	Exists(ctx context.Context, username string) bool
 }
 
@@ -35,17 +36,17 @@ func (u *Repository) GetByUsername(ctx context.Context, username string) (model.
 	return user, nil
 }
 
-func (u *Repository) Register(ctx context.Context, user model.User) error {
+func (u *Repository) Register(ctx context.Context, user model.User) (primitive.ObjectID, error) {
 	exist := u.Exists(ctx, user.Username)
 	if exist {
 		fmt.Println("Username already exists!")
-		return nil
+		return primitive.ObjectID{}, nil
 	}
-	_, err := u.col.InsertOne(context.Background(), user)
+	obj, err := u.col.InsertOne(context.Background(), user)
 	if err != nil {
-		return err
+		return primitive.ObjectID{}, err
 	}
-	return nil
+	return obj.InsertedID.(primitive.ObjectID), nil
 }
 
 func (u *Repository) Exists(ctx context.Context, username string) bool {

@@ -4,14 +4,11 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/urosradivojevic/health/pkg/cache"
+	"github.com/urosradivojevic/health/pkg/message"
 	"github.com/urosradivojevic/health/pkg/model"
 	"github.com/urosradivojevic/health/pkg/repositories/movie_repository"
 	"github.com/urosradivojevic/health/pkg/requests"
 )
-
-type message struct {
-	Message string `json:"message"`
-}
 
 // ShowAccount godoc
 //
@@ -21,7 +18,7 @@ type message struct {
 //		@Accept			  json
 //		@Produce		  json
 //		@Success		 201	{object}	model.Netflix
-//	 @Failure      	 422   {object}    message "Validation failed"
+//	 @Failure      	 422   {object}    message.Msg "Validation failed"
 //	 @Param request body requests.CreateMovieRequest true "Movie"
 //		@Router			 /movie [post]
 func CreateMovie(repo movie_repository.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
@@ -29,14 +26,14 @@ func CreateMovie(repo movie_repository.NetflixInterface, redis cache.RedisCacheI
 		var request requests.CreateMovieRequest
 
 		if err := c.BodyParser(&request); err != nil {
-			return c.Status(fiber.StatusUnprocessableEntity).JSON(message{
+			return c.Status(fiber.StatusUnprocessableEntity).JSON(message.Msg{
 				Message: err.Error(),
 			})
 		}
 		validate := validator.New()
 		err := validate.Struct(request)
 		if err != nil {
-			return c.Status(fiber.StatusUnprocessableEntity).JSON(message{
+			return c.Status(fiber.StatusUnprocessableEntity).JSON(message.Msg{
 				Message: "Validation failed",
 			})
 		}

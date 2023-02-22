@@ -3,13 +3,10 @@ package delete_movie_handler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/urosradivojevic/health/pkg/cache"
+	"github.com/urosradivojevic/health/pkg/message"
 	"github.com/urosradivojevic/health/pkg/repositories/movie_repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-type message struct {
-	Message string `json:"message"`
-}
 
 // ShowAccount godoc
 //
@@ -19,14 +16,14 @@ type message struct {
 //			@Accept			  json
 //			@Produce		  json
 //			@Success		 204
-//		 @Failure      	 400   {object}    message "Invalid Object ID"
+//		 @Failure      	 400   {object}    message.Msg "Invalid Object ID"
 //	   @Param id   path string true "Movie ID"
 //		@Router			 /movie/{id} [delete]
 func DeleteMovie(repo movie_repository.NetflixInterface, redis cache.RedisCacheInterface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		movieId := c.Params("id")
 		if !primitive.IsValidObjectID(movieId) {
-			return c.Status(fiber.StatusBadRequest).JSON(message{
+			return c.Status(fiber.StatusBadRequest).JSON(message.Msg{
 				Message: "Invalid ID.",
 			})
 		}

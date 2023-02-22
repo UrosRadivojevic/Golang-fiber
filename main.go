@@ -3,12 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"os"
+	"strconv"
 
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gkampitakis/fiber-modules/gracefulshutdown"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	_ "github.com/urosradivojevic/health/docs"
 	"github.com/urosradivojevic/health/pkg/container"
 	"github.com/urosradivojevic/health/pkg/routes"
@@ -38,14 +41,16 @@ func main() {
 	env := c.GetEnviorment()
 	if env == "development" {
 		err := godotenv.Load(".env.development")
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		if err != nil {
-			log.Fatal("Error loading .env file")
+			log.Fatal()
 		}
 	}
 	if env == "testing" {
 		err := godotenv.Load(".env.testing")
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		if err != nil {
-			log.Fatal("Error loading .env file")
+			log.Fatal()
 		}
 	}
 	if env != "production" {
@@ -53,36 +58,12 @@ func main() {
 	}
 
 	routes.SetUpRoutes(app, c)
+	portString := os.Getenv("PORT")
+	port, err := strconv.Atoi(portString)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Port is not a number.")
+	}
+	log.Info().Int("port", port).Msg("Server is getting started.")
 
-	fmt.Println("Server is getting started...")
 	gracefulshutdown.Listen(app, "localhost:3000", gracefulshutdown.Default())
-	// GracefullShoutdown(app)
-	// err := app.Listen(":3000")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
 }
-
-// func GracefullShoutdown(app *fiber.App) {
-// 	c := make(chan os.Signal, 1)
-// 	signal.Notify(c, os.Interrupt)
-
-// 	serverShutdown := make(chan struct{})
-// kanal sluzi da sinhronizujem dve niti
-// go func, sponujem novu nit
-// 	go func() {
-// 		_ = <-c
-// 		fmt.Println("Gracefully shutting down...")
-// 		_ = app.Shutdown()
-// 		serverShutdown <- struct{}{}
-// 	}()
-
-// 	if err := app.Listen(":3000"); err != nil {
-// 		log.Panic(err)
-// 	}
-
-// 	<-serverShutdown
-
-// 	fmt.Println("Running cleanup tasks...")
-// 	// Your cleanup tasks go here
-// }

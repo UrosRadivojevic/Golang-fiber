@@ -43,7 +43,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_request.UserRequest"
+                            "$ref": "#/definitions/login_request.Request"
                         }
                     }
                 ],
@@ -54,13 +54,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid login credentials",
                         "schema": {
-                            "$ref": "#/definitions/login_handler.message"
+                            "$ref": "#/definitions/message.Msg"
                         }
                     },
                     "422": {
                         "description": "Validation failed",
                         "schema": {
-                            "$ref": "#/definitions/login_handler.message"
+                            "$ref": "#/definitions/message.Msg"
                         }
                     }
                 }
@@ -100,7 +100,7 @@ const docTemplate = `{
                     "422": {
                         "description": "Validation failed",
                         "schema": {
-                            "$ref": "#/definitions/create_movie_handler.message"
+                            "$ref": "#/definitions/message.Msg"
                         }
                     }
                 }
@@ -140,7 +140,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid object ID",
                         "schema": {
-                            "$ref": "#/definitions/get_movie_handler.message"
+                            "$ref": "#/definitions/message.Msg"
                         }
                     }
                 }
@@ -173,7 +173,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid Object ID",
                         "schema": {
-                            "$ref": "#/definitions/mark_as_watched_handler.message"
+                            "$ref": "#/definitions/message.Msg"
                         }
                     }
                 }
@@ -206,7 +206,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid Object ID",
                         "schema": {
-                            "$ref": "#/definitions/delete_movie_handler.message"
+                            "$ref": "#/definitions/message.Msg"
                         }
                     }
                 }
@@ -269,7 +269,7 @@ const docTemplate = `{
                     "422": {
                         "description": "Validation failed",
                         "schema": {
-                            "$ref": "#/definitions/register_handler.message"
+                            "$ref": "#/definitions/message.Msg"
                         }
                     }
                 }
@@ -277,39 +277,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "create_movie_handler.message": {
+        "login_request.Request": {
             "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
             "properties": {
-                "message": {
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                },
+                "username": {
                     "type": "string"
                 }
             }
         },
-        "delete_movie_handler.message": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "get_movie_handler.message": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "login_handler.message": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "mark_as_watched_handler.message": {
+        "message.Msg": {
             "type": "object",
             "properties": {
                 "message": {
@@ -334,14 +318,6 @@ const docTemplate = `{
                 },
                 "year": {
                     "type": "integer"
-                }
-            }
-        },
-        "register_handler.message": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
                 }
             }
         },
@@ -371,7 +347,6 @@ const docTemplate = `{
         "user_request.UserRequest": {
             "type": "object",
             "required": [
-                "firstname",
                 "password",
                 "username"
             ],

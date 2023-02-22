@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/urosradivojevic/health/pkg/model"
 	"github.com/urosradivojevic/health/pkg/repositories/user_repository"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type MockRepo struct {
@@ -19,9 +20,9 @@ func (u *MockRepo) GetByUsername(ctx context.Context, username string) (model.Us
 	return args.Get(0).(model.User), args.Error(1)
 }
 
-func (u *MockRepo) Register(ctx context.Context, user model.User) error {
+func (u *MockRepo) Register(ctx context.Context, user model.User) (primitive.ObjectID, error) {
 	args := u.Called(ctx, user)
-	return args.Error(0)
+	return args.Get(0).(primitive.ObjectID), args.Error(1)
 }
 
 func (u *MockRepo) Exists(ctx context.Context, username string) bool {
