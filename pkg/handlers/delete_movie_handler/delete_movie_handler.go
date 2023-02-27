@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/urosradivojevic/health/pkg/cache"
 	"github.com/urosradivojevic/health/pkg/message"
+	"github.com/urosradivojevic/health/pkg/rabbitmq/publisher"
 	"github.com/urosradivojevic/health/pkg/repositories/movie_repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -33,6 +34,7 @@ func DeleteMovie(repo movie_repository.NetflixInterface, redis cache.RedisCacheI
 		if err := repo.DeleteOneMovie(movieId); err != nil {
 			return err
 		}
+		publisher.Publish(movieId, "campaings_deleted_queue")
 		return c.SendStatus(fiber.StatusNoContent)
 	}
 }

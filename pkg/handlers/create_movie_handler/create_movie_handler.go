@@ -6,6 +6,7 @@ import (
 	"github.com/urosradivojevic/health/pkg/cache"
 	"github.com/urosradivojevic/health/pkg/message"
 	"github.com/urosradivojevic/health/pkg/model"
+	"github.com/urosradivojevic/health/pkg/rabbitmq/publisher"
 	"github.com/urosradivojevic/health/pkg/repositories/movie_repository"
 	"github.com/urosradivojevic/health/pkg/requests"
 )
@@ -53,7 +54,7 @@ func CreateMovie(repo movie_repository.NetflixInterface, redis cache.RedisCacheI
 		if err != nil {
 			return err
 		}
-
+		publisher.Publish(movie.ID.Hex(), "campaings_created_queue")
 		return c.Status(fiber.StatusCreated).JSON(movie)
 	}
 }
