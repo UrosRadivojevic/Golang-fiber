@@ -11,6 +11,7 @@ import (
 	"github.com/urosradivojevic/health/pkg/repositories/user_repository"
 	"github.com/urosradivojevic/health/pkg/services/hasher"
 	"github.com/urosradivojevic/health/pkg/services/login"
+	"github.com/urosradivojevic/health/pkg/services/token"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -102,4 +103,8 @@ func (c *Container) GetHashRepository() hasher.Interface {
 
 func (c *Container) GetLoginRepository() login.Interface {
 	return login.New(c.GetUserRpository(), c.GetHashRepository())
+}
+
+func (c *Container) GetTokenService() token.Interface {
+	return token.New()
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/urosradivojevic/health/pkg/handlers/login_handler.go"
 	"github.com/urosradivojevic/health/pkg/handlers/mark_as_watched_handler"
 	"github.com/urosradivojevic/health/pkg/handlers/register_handler"
+	"github.com/urosradivojevic/health/pkg/middleware/jwt_middleware"
 )
 
 func SetUpRoutes(app *fiber.App, c *container.Container) {
@@ -19,7 +20,7 @@ func SetUpRoutes(app *fiber.App, c *container.Container) {
 	app.Get("/movie/:id", get_movie_handler.GetMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	app.Put("/movie/:id", mark_as_watched_handler.MarkAsWatched(c.GetNetflixRepository()))
 	app.Post("/movie", create_movie_handler.CreateMovie(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
-	app.Get("/movies", get_movies_handler.GetMovies(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
+	app.Get("/movies", jwt_middleware.AuthRequired(), get_movies_handler.GetMovies(c.GetNetflixRepository(), c.GetRedisCacheRepository()))
 	app.Post("/register", register_handler.Handler(c.GetUserRpository(), c.GetHashRepository(), validate))
-	app.Post("/login", login_handler.Handler(c.GetLoginRepository(), validate))
+	app.Post("/login", login_handler.Handler(c.GetLoginRepository(), validate, c.GetTokenService()))
 }

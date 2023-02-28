@@ -8,6 +8,7 @@ import (
 	"github.com/urosradivojevic/health/pkg/message"
 	"github.com/urosradivojevic/health/pkg/requests/login_request"
 	"github.com/urosradivojevic/health/pkg/services/login"
+	"github.com/urosradivojevic/health/pkg/services/token"
 )
 
 // ShowAccount godoc
@@ -22,7 +23,7 @@ import (
 //	 @Failure      	 400   {object}    message.Msg "Invalid login credentials"
 //	 @Param request body login_request.Request true "User"
 //		@Router			 /login [post]
-func Handler(loginService login.Interface, validator *validator.Validate) fiber.Handler {
+func Handler(loginService login.Interface, validator *validator.Validate, tokenService token.Interface) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var request login_request.Request
 		if err := c.BodyParser(&request); err != nil {
@@ -49,7 +50,14 @@ func Handler(loginService login.Interface, validator *validator.Validate) fiber.
 				})
 			}
 		}
+		tok, err := tokenService.Generate()
+		if err != nil {
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
 
-		return c.Status(fiber.StatusOK).JSON(user)
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"token": tok,
+			"user":  user,
+		})
 	}
 }
