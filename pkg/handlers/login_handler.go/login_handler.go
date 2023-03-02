@@ -6,10 +6,16 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
 	"github.com/urosradivojevic/health/pkg/message"
+	"github.com/urosradivojevic/health/pkg/model"
 	"github.com/urosradivojevic/health/pkg/requests/login_request"
 	"github.com/urosradivojevic/health/pkg/services/login"
 	"github.com/urosradivojevic/health/pkg/services/token"
 )
+
+type Response struct {
+	Token string     `json:"token"`
+	User  model.User `json:"user"`
+}
 
 // ShowAccount godoc
 //
@@ -55,9 +61,9 @@ func Handler(loginService login.Interface, validator *validator.Validate, tokenS
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{
-			"token": tok,
-			"user":  user,
+		return c.Status(fiber.StatusOK).JSON(Response{
+			Token: tok,
+			User:  user,
 		})
 	}
 }
