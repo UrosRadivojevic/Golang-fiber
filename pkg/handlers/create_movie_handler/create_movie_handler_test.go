@@ -94,8 +94,8 @@ func TestCreateMovie_Success(t *testing.T) {
 
 	assert.NoError(err)
 	assert.Equal(fiber.StatusCreated, res.StatusCode)
-	// assert.Equal("DieHard", movie.Movie)
-	// assert.Equal(2005, movie.Year)
-	// assert.Equal(true, movie.Watched)
-	// assert.Equal("Bruce", movie.LeadRole)
+	assert.Equal("DieHard", movie.Movie)
+	assert.Equal(2005, movie.Year)
+	assert.Equal(true, movie.Watched)
+	assert.Equal("Bruce", movie.LeadRole)
 }

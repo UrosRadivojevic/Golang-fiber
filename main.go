@@ -24,7 +24,7 @@ func init() {
 	flag.Parse()
 }
 
-// @title			Fiber Example API
+// @title			Fiber Movies API
 // @version		1.0
 // @description	This is a sample swagger for Fiber
 // @termsOfService	http://swagger.io/terms/
